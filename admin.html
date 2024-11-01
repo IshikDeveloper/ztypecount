@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body { font-family: 'Poppins', sans-serif; text-align: center; margin-top: 50px; }
+        input, button { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Admin: Update Count</h1>
+    <input type="number" id="newCount" placeholder="Enter new count">
+    <button onclick="updateCount()">Update</button>
+
+    <script>
+        function updateCount() {
+            const newCount = document.getElementById('newCount').value;
+            const enteredCode = prompt('Enter the secret code:');
+            const encodedEnteredCode = btoa(enteredCode);
+            const hardcodedEncodedPassword = 'eHh4Z2xvYmdsb2dhZ2FsYWI='; // Base64 for "hidden"
+
+            if (encodedEnteredCode === hardcodedEncodedPassword) {
+                localStorage.setItem('count', newCount);
+                alert('Count updated successfully');
+            } else {
+                alert('Unauthorized');
+            }
+        }
+    </script>
+</body>
+</html>
