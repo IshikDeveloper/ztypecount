@@ -5,21 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
     <style>
-        body { font-family: 'Poppins', sans-serif; text-align: center; margin-top: 50px; }
-        input, button { margin-top: 20px; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        input, button {
+            margin-top: 20px;
+            display: block;
+        }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .light-mode {
+            background-color: #fff;
+            color: #000;
+        }
+        #toggleButton {
+            margin-top: 20px;
+            padding: 10px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <h1>Admin: Update Count</h1>
+    <h1>Admin: Update Count and Upload Image</h1>
     <input type="number" id="newCount" placeholder="Enter new count">
-    <button onclick="updateCount()">Update</button>
+    <button onclick="updateCount()">Update Count</button>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button onclick="uploadImage()">Upload Image</button>
+    <button id="toggleButton" onclick="toggleTheme()">Toggle Light/Dark Mode</button>
 
     <script>
+        const hardcodedEncodedPassword = 'eHh4Z2xvYmdsb2dhZ2FsYWI='; // Base64 for "xxxglobglogagalab"
+
+        function base64Encode(input) {
+            return btoa(input);
+        }
+
         function updateCount() {
             const newCount = document.getElementById('newCount').value;
             const enteredCode = prompt('Enter the secret code:');
-            const encodedEnteredCode = btoa(enteredCode);
-            const hardcodedEncodedPassword = 'eHh4Z2xvYmdsb2dhZ2FsYWI='; // Base64 for "hidden"
+            const encodedEnteredCode = base64Encode(enteredCode);
 
             if (encodedEnteredCode === hardcodedEncodedPassword) {
                 localStorage.setItem('count', newCount);
@@ -28,6 +57,47 @@
                 alert('Unauthorized');
             }
         }
+
+        function uploadImage() {
+            const enteredCode = prompt('Enter the secret code:');
+            const encodedEnteredCode = base64Encode(enteredCode);
+
+            if (encodedEnteredCode === hardcodedEncodedPassword) {
+                const fileInput = document.getElementById('imageUpload');
+                const file = fileInput.files[0];
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = function () {
+                        localStorage.setItem('proofImage', reader.result);
+                        alert('Image uploaded successfully');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please select an image to upload.');
+                }
+            } else {
+                alert('Unauthorized');
+            }
+        }
+
+        function setTheme(theme) {
+            document.body.className = theme;
+            localStorage.setItem('theme', theme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'light-mode';
+            const newTheme = currentTheme === 'light-mode' ? 'dark-mode' : 'light-mode';
+            setTheme(newTheme);
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light-mode';
+            setTheme(savedTheme);
+        }
+
+        loadTheme(); // Load saved theme
     </script>
 </body>
 </html>
